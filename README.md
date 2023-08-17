@@ -26,3 +26,7 @@ go get -u github.com/lib/pq
 go run main.go
 ```
 Access the aggregator at http://localhost:8080.
+
+### Testing: 
+1. Handling error 
+![GET_err](./images/GET_err.png)
