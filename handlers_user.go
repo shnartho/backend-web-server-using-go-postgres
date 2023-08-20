@@ -19,16 +19,19 @@ func (apiCfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Reques
 	params := parameters{}
 	err := decoder.Decode(&params)
 	if err != nil {
-		respondWithError(w, 400, fmt.Sprintf("Error parsing JSON:", err))
+		respondWithError(w, 400, fmt.Sprintf("Error parsing JSON: %v", err))
 		return
 	}
 
-	apiCfg.DB.CreateUser(r.Context(), database.CreateUserParams{
+	user, err := apiCfg.DB.CreateUser(r.Context(), database.CreateUserParams{
 		ID:        uuid.New(),
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
 		Name:      params.Name,
 	})
-
-	respondWithJSON(w, 200, struct{}{})
+	if err != nil {
+		respondWithError(w, 400, fmt.Sprintf("Couldn't create user: %v", err))
+		return
+	}
+	respondWithJSON(w, 200, user)
 }
